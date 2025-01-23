@@ -11,7 +11,6 @@ Created: 2025 01 23
 Updated: 2025 01 23
 Terminal command to compile file to an executable:
     gcc -o thru thru.c && chmod +x thru && ./thru
-Description: [DESCRIPTION]
 */
 
 int comp(const void* a, const void* b) {
@@ -28,17 +27,15 @@ int removeDup(int arr[], int n) {
 	if (n == 0) return 0;
 	int j = 0;
 	for (int i=1; i<n-1; i++) {
-		// If a unique element is found, place
-		// it at arr[j + 1]
+		// If a unique element is found, place it at arr[j + 1]
 		if (arr[i] != arr[j]) arr[++j] = arr[i];
     }
-    // Return the new ending of arr that only
-    // contains unique elements
-    //
+    // Return the new ending of arr that only contains unique elements
     return j + 1;
 }
 
 int isNumber(const char number[]) {
+	// Does not account for negative numbers
     for (int i=0; number[i] != 0; i++) if (!isdigit(number[i])) return 0;
     return 1;
 }
@@ -46,11 +43,9 @@ int isNumber(const char number[]) {
 int main(int argc, char **argv) {
 	int debug_prints = 0;
 	int numbers_size = 1000; // How big the numbers array will be
-	int numbers[numbers_size];
-	int numbers_count = 0; // Next free index of the numbers to return
+	int numbers[numbers_size]; // Array where final values are stored
+	int numbers_count = 1; // Next free index of the numbers to return
 	for (int i=0; i<numbers_size; i++) numbers[i] = 0; // Set default
-	int lastnum = 0;	// The last number given
-	int lastargnum = 0; // Index the last number was given
 	char * accepted_operators [] = {"+", "-", "thru"};
 	int len = sizeof(accepted_operators)/sizeof(accepted_operators[0]);
 	int operator = 0;	// Which math operator given. See list below
@@ -82,11 +77,9 @@ int main(int argc, char **argv) {
     		if (i == 1) { // If this is the first argument
 				if (debug_prints) printf("\tFirst index, storing number\n");
 				// Store value
-				lastnum = atoi(argv[i]); // Save to last number
-				lastargnum = i; // Index of the number given
-				numbers[numbers_count] = lastnum; // Add number to array
+				numbers[numbers_count] = atoi(argv[i]); // Add number to array
 				numbers_count++; // Increase array counter
-				if (debug_prints) printf("[FOUND NUM] %i\n", lastnum);
+				if (debug_prints) printf("[FOUND NUM] %i\n", atoi(argv[i]));
 			} else { // Not first index
 				if (debug_prints) printf("\tNot first index, checking if operator before\n");
 				// If it is not the first index, it doesn't mean we can
@@ -105,9 +98,7 @@ int main(int argc, char **argv) {
 							for (int j=0; j<numbers_count; j++) {
 								// numbers_count instead of number_size because
 								// numbers_cound<j<number_size are all 0.
-								if (numbers[j] == atoi(argv[i])) {
-									numbers[j] = 0;
-								}
+								if (numbers[j] == atoi(argv[i])) numbers[j] = 0;
 							}
 							break;
 						case 3: // thru
@@ -124,7 +115,7 @@ int main(int argc, char **argv) {
 								thru_1 = thru_1 - thru_2;
 							}
 							for (int j=thru_1; j<=thru_2; j++) {
-								// Add each number to array
+								// Add each number to array, thru_2 inclusive
 								numbers[numbers_count] = j;
 								numbers_count++;
 							}
@@ -138,7 +129,6 @@ int main(int argc, char **argv) {
 			}
 		} else {
 			// Check if it is a valid operator
-			if (debug_prints) printf("\tChecking if operator\n");
 			char * check = argv[i];
 			for(int j = 0; check[j]; j++){
 				// Makes lowercase
@@ -151,8 +141,7 @@ int main(int argc, char **argv) {
     			    // Store operator
     			    operator = j+1; // index (starts at 0) to operator list (starts at 1)
     			    operatorargnum = i; // Set arg num
-    			    if (debug_prints) printf("[FOUND OPR] %s. Set operator variable to %i\n", check, operator);
-    			    if (debug_prints) printf("operatorargnum: %i\n", operatorargnum);
+    			    if (debug_prints) printf("[OPERATOR] %s\n", check);
     			}
 			}
 			if (last_operatorargnum == operatorargnum) {
